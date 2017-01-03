@@ -1,0 +1,255 @@
+$id = $_GET['people'];
+echo $id;
+
+if(isset($id) == ""){
+  return 0;
+}else{
+  getinfo($id);
+}
+
+function getinfo($id){
+  $result="SELECT
+              first_name,
+              last_name,
+              favorite_food
+            FROM people
+            WHERE people_id='".$id."' ";
+
+  $result2="SELECT
+            states.state_name,
+            visits.date_visited
+            FROM people
+            INNER JOIN visits ON visits.person_id = people.people_id
+            INNER JOIN states ON states.states_id = visits.state_id
+            WHERE people.people_id='".$id."' ";
+
+  $find=mysql_query($result);
+  $find2=mysql_query($result2);
+  $row=mysql_fetch_array($find);
+  ?>
+  <table width="900" border="1" align="center">
+    <tr>
+
+      <td>
+        <table>
+          <tr>
+          <td align="center"><th>Person Selected:</th></td>
+          </tr>
+          <tr>
+          <?php
+          echo "<td>".$row['first_name']." ".$row['last_name']."</td>";
+          ?>
+          </tr>
+        </table>
+      </td>
+
+              <td>
+                <table>
+                <tr>
+                <td align="center"><th>Favorite Food:</th></td>
+                </tr>
+                <tr>
+                <?php
+                echo "<td>".$row['favorite_food']."</td>";
+                ?>
+                </tr>
+                </table>
+              </td>
+
+              <td>
+                <table>
+                <tr>
+                <td align="center"><th>State(s) Visited:</th></td>
+                </tr>
+                <?php
+                while($row2 = mysql_fetch_array($find2))
+                {
+                  echo "<tr>";
+                  echo "<td>".$row2['state_name']." on ".$row2['date_visited']."</td>";
+                  echo "</tr>";
+                }
+                ?>
+                </table>
+              </td>
+            </tr>
+          </table>
+  <?php
+}
+?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<?php
+$conn=mysql_connect('localhost', 'root', 'root', 'project2');
+mysql_select_db('project2');
+
+if(!$conn){
+    die("Connection failed: ".$conn->error);
+}
+/*
+$request = parse_url($_SERVER['REQUEST_URI']);
+$path = explode('/', $request['path'], '/');
+
+header('json');*/
+
+$id = $_GET['people'];
+
+if(isset($id) == ""){
+  return 0;
+}else{
+  echo json_encode($id);
+  getinfo($id);
+}
+
+function people(){
+  global $conn;
+  $query="SELECT * FROM people";
+
+  $result=mysql_query($conn, $query);
+
+  while($row=mysql_fetch_array($result, true)){
+    $response[]=$row;
+  }
+
+  header('dataType: application/json');
+  echo(json_encode($response));
+}
+
+function addperson(){
+  global $conn;
+  $first_name = $_POST['firstname'];
+  $last_name =  $_POST['lastname'];
+  $favorite_food = $_POST['favoritefood'];
+
+  $sql = "INSERT INTO people
+          (id, first_name, last_name, favorite_food)
+          VALUES(NULL, '$first_name', '$last_name', '$favorite_food')";
+
+  if (isset($_POST['submit'])){
+    if(mysql_query($sql)){
+      echo("Person added added!");
+    }else{
+      echo("Error adding person: ".mysql_error());
+    }
+  }
+}
+
+function getinfo($id){
+
+    $id = $_GET['people'];
+
+    $result="SELECT
+                first_name,
+                last_name,
+                favorite_food
+              FROM people
+              WHERE people_id='".$id."' ";
+    //grabs state name
+    $result2="SELECT
+              states.state_name,
+              visits.date_visited
+              FROM people
+              INNER JOIN visits ON visits.person_id = people.people_id
+              INNER JOIN states ON states.states_id = visits.state_id
+              WHERE people.people_id='".$id."' ";
+
+    $find=mysql_query($result);
+    $find2=mysql_query($result2);
+    $row=mysql_fetch_array($find);
+    ?>
+    <table width="900" border="1" align="center">
+      <tr>
+
+        <td>
+          <table>
+            <tr>
+            <td align="center"><th>Person Selected:</th></td>
+            </tr>
+            <tr>
+            <?php
+            echo "<td>".$row['first_name']." ".$row['last_name']."</td>";
+            ?>
+            </tr>
+          </table>
+        </td>
+
+        <td>
+          <table>
+          <tr>
+          <td align="center"><th>Favorite Food:</th></td>
+          </tr>
+          <tr>
+          <?php
+          echo "<td>".$row['favorite_food']."</td>";
+          ?>
+          </tr>
+          </table>
+        </td>
+
+        <td>
+          <table>
+          <tr>
+          <td align="center"><th>State(s) Visited:</th></td>
+          </tr>
+          <?php
+          while($row2 = mysql_fetch_array($find2))
+          {
+            echo "<tr>";
+            echo "<td>".$row2['state_name']." on ".$row2['date_visited']."</td>";
+            echo "</tr>";
+          }
+          ?>
+          </table>
+        </td>
+      </tr>
+    </table>
+}
+
+<?php
+
+function addvisit(){
+    global $conn;
+
+    $personid = $_POST['person'];
+    $stateid = $_POST['state'];
+    $visit = $_POST['datevisited']
+
+    //inserts into visits table
+    $sql = "INSERT INTO visits
+            (id, person_id, state_id, date_visited)
+            VALUES(NULL, '".$personid."', '".$stateid."', '".$visit."')";
+
+            if(mysql_query($sql) == TRUE){
+            echo("State added!");
+          }else{
+            echo("Error adding state: ".mysql_error());
+          }}
+    }
+/*
+if($_SERVER['REQUEST_METHOD'] == 'GET'){
+	getinfo();
+}elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
+  if(isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['favoritefood'])){
+    addPerson();
+  }elseif(isset($_POST['person']) && isset($_POST['state']) && isset($_POST['datevisited'])){
+    addVisit();
+  }
+}
+else{
+		die(mysql_error());
+}*/
+
+?>
