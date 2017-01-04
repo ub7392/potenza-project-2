@@ -1,5 +1,4 @@
 <?php
-//OPEN CONNECTION
 $conn=mysql_connect('localhost', 'root', 'root', 'project2');
 mysql_select_db('project2');
 
@@ -7,169 +6,202 @@ if(!$conn){
   die("Connection failed: ".$conn->error);
 }
 
-$request = parse_url($_SERVER['REQUEST_URI']);
-$path = explode('/', $request['path']);
-$apiarray = [];
-$j = 2;
+$requestURI = parse_url($_SERVER['REQUEST_URI']);
+$segments = explode('/', $requestURI['path']);
+$apiVars = [];
 
-while($j < count($path)) {
-	if($path[$j+1]) {
-  $apiarray[$path[$j]] = $path[$j+1];
-  $j += 2;
+$i = 2;
+while($i < count($segments)){
+	if($segments[$i+1]) {
+      $apiVars[$segments[$i]] = $segments[$i+1];
+      $i += 2;
 	} else {
-  $apiarray[$path[$j]] = null;
-  $j++;
+      $apiVars[$segments[$i]] = 'null';
+      $i++;
 	}
 }
-header('Content-Type: application/json');
-$requestMethod = $_SERVER["REQUEST_METHOD"];
+
+function findRoute($apiVars)
+{
+  // Check if people are required
+  if(isset($apiVars['people'])){
+    getPeople($apiVars['people']);
+  }
+  // Check if states are required
+  if(isset($apiVars['states'])){
+    getStates($apiVars['states']);
+  }
+  // Check if visits are required
+  if(isset($apiVars['visits'])) {
+    getVisits($apiVars['visits']);
+  }
+}
 
 //api/people
-function getPeople(){
+function getPeople($people_id){
   global $conn;
+  $response = [];
 
-  $query="SELECT * FROM people";
+  //api/people
+  if($people_id === 'null'){
+    $query = "SELECT * FROM people";
 
-  $result=mysql_query($query, $conn);
-  while($row=mysql_fetch_array($result))
-  {
-    $response[]=$row;
+    $result = mysql_query($query, $conn);
+    while($row = mysql_fetch_array($result))
+    {
+      $response[] = [
+        'first_name' => $row['first_name'],
+        'last_name' => $row['last_name'],
+        'favorite_food' => $row['favorite_food']
+      ];
+    }
+
+    header('Content-Type: application/json');
+    echo(json_encode($response));
+
+  //api/people/#
+  }elseif (is_numeric($people_id)){
+    $query = "SELECT * FROM people WHERE people_id = ".$people_id;
+
+    $result = mysql_query($query, $conn);
+    while($row = mysql_fetch_array($result))
+    {
+      $response[] = [
+        'first_name' => $row['first_name'],
+        'last_name' => $row['last_name'],
+        'favorite_food' => $row['favorite_food']
+      ];
+    }
+    header('Content-Type: application/json');
+    echo(json_encode($response));
+    }
+}
+
+//api/states
+function getStates($states_id){
+  global $conn;
+  $response = [];
+
+  //api/states
+  if($states_id === 'null'){
+    $query = "SELECT * FROM states";
+
+    $result = mysql_query($query, $conn);
+    while($row = mysql_fetch_array($result))
+    {
+      $response[] = [
+        'state_name' => $row['state_name'],
+        'state_abbreviation' => $row['state_abbreviation']
+      ];
+    }
+
+    header('Content-Type: application/json');
+    echo(json_encode($response));
+
+  //api/states/#
+  }elseif (is_numeric($states_id)){
+    $query = "SELECT * FROM states WHERE states_id = ".$states_id;
+
+    $result = mysql_query($query, $conn);
+    while($row = mysql_fetch_array($result))
+    {
+      $response[] = [
+        'state_name' => $row['state_name'],
+        'state_abbreviation' => $row['state_abbreviation']
+      ];
+    }
+    header('Content-Type: application/json');
+    echo(json_encode($response));
   }
-  header('Content-Type: application/json');
-  echo(json_encode($response));
-}
-
-function addperson(){
-  global $conn;
-
-  $firstname = $_POST['firstname'];
-  $lastname = $_POST['lastname'];
-  $favoritefood = $_POST['favoritefood'];
-  $query = "INSERT INTO people(people_id, first_name, last_name, favorite_food)
-            VALUES (NULL, '$firstname', '$lastname', '$favoritefood')";
-  if(mysql_query($query)){
-    echo .$firstname. " " .$lastname. " was added";
-  }else{
-    die(mysql_error());
-  }
-}
-
-function getPersonById($idFromRequest){
-  global $conn;
-
-  $query="SELECT * FROM people WHERE people_id = ".$idFromRequest;
-
-	$result=mysql_query($query, $conn);
-	while($row=mysql_fetch_array($result, true)){
-		$response[]=$row;
-	}
-	header('Content-Type: application/json');
-	echo json_encode($response);
-}
-
-function getStates(){
-  global $conn;
-
-	$query="SELECT * FROM states";
-
-	$result=mysql_query($query, $conn);
-
-  while($row=mysql_fetch_array($result, true)){
-		$response[]=$row;
-	}
-	header('Content-Type: application/json');
-	echo json_encode($response);
-}
-
-function getVisitById($idFromRequest){
-  global $conn;
-
-	$query="SELECT * FROM visits INNER JOIN people on visits.person_id = people.people_id INNER JOIN states on visits.state_id = states.states_id WHERE people_id =".$idFromRequest;
-
-  if($requestId!= 0){
-		$query=" WHERE people_id=".$requestId;
-	}
-
-  $response=array();
-	$result=mysql_query($query, $conn);
-
-  while($row=mysql_fetch_array($result, true)){
-			$response[]=$row;
-	}
-	header('Content-Type: application/json');
-	echo json_encode($response);
-}
-function getVisits(){
-  global $conn;
-
-	$query="SELECT * FROM visits INNER JOIN people on visits.person_id = people.people_id INNER JOIN states on visits.state_id = states.states_id";
-	$response=array();
-	$result=mysql_query($query, $conn);
-
-  while($row=mysql_fetch_array($result, true)){
-		$response[]=$row;
-	}
-	header('Content-Type: application/json');
-	echo json_encode($response);
 }
 
 //api/visits
-function addvisit(){
+function getVisits($visits_id){
   global $conn;
-	$personVisitId = $_POST['person-add'];
-  $date = $_POST['date-vis'];
-  $state = $_POST['state-vis'];
-  $state_int = intval($state);
-	$personVisitId_int = intval($personVisitId);
-  $query = "INSERT INTO visits VALUES (DEFAULT, $personVisitId_int, $state_int, '$date')";
+  $response = [];
 
-  if (mysql_query($conn, $query)){
-    console.log("This visit was added");
-  }else{
-    die(mysql_error());
+  //api/visits
+  if($visits_id === 'null'){
+    $query = "SELECT * FROM visits";
+
+    $result = mysql_query($query, $conn);
+    while($row = mysql_fetch_array($result))
+    {
+      $response[] = [
+        'person_id' => $row['person_id'],
+        'state_id' => $row['state_id'],
+        'date_visited' => $row['date_visited']
+      ];
+    }
+
+    header('Content-Type: application/json');
+    echo(json_encode($response));
+
+  //api/visits/#
+  }elseif (is_numeric($visits_id)){
+    $query = "SELECT * FROM visits WHERE id = ".$visits_id;
+
+    $result = mysql_query($query, $conn);
+    while($row = mysql_fetch_array($result))
+    {
+      $response[] = [
+        'person_id' => $row['person_id'],
+        'state_id' => $row['state_id'],
+        'date_visited' => $row['date_visited']
+      ];
+    }
+    header('Content-Type: application/json');
+    echo(json_encode($response));
   }
 }
 
+function addPeople(){
+  global $conn;
+
+  $first_name = $_POST['first_name'];
+  $last_name = $_POST['last_name'];
+  $favorite_food = $_POST['favorite_food'];
+
+  $query = "INSERT INTO people
+            (first_name, last_name, favorite_food)
+            VALUES('$first_name', '$last_name', '$favorite_food')";
+
+  if(mysql_query($query)){
+    echo " ".$first_name." ".$last_name." was added!";
+  }else{
+    echo mysql_error();
+  }
+}
+
+function addVisit(){
+  global $conn;
+
+  $person_id = $_POST['person_id'];
+  $state_id = $_POST['state_id'];
+  $date_visited = $_POST['date_visited'];
+
+  $query = "INSERT INTO visits
+            (person_id, state_id, date_visited)
+            VALUES('$person_id', '$state_id', '$date_visited')";
+
+  if(mysql_query($query)){
+    echo "This visit was added!";
+  }else{
+    echo mysql_error();
+  }
+}
 
 if($_SERVER['REQUEST_METHOD'] == 'GET'){
-	if(array_key_exists('people', $apiarray)){
-		if($apiarray['people'] == null){
-			return 0;
-		}elseif($apiarray['people'] !== null){
-			getPersonById($apiarray['people']);
-		}
-  }elseif(array_key_exists('visits', $apiarray)){
-		if($apiarray['visits'] == null){
-			getVisits();
-		}elseif($apiarray['visits'] !== null){
-			getVisitById($apiarray['visits']);
-		}else{
-			return 0;
-		}
-	}elseif(array_key_exists('states', $apiarray)){
-	   if($apiarray['states'] == null){
-			getStates();
-		  }else{
-			     return 0;
-		   }
-      }else{
-		      getPeople();
-		        getStates();
-		          getVisits();
-	     }
+  findRoute($apiVars);
 }elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
-	if(array_key_exists('people', $apiarray)){
-    addperson();
-	}elseif(array_key_exists('visits', $apiarray)){
-		addvisit();
-	}else{
-		die(mysql_error());
-	}
+  if(isset($apiVars['people'])){
+    addPeople($apiVars['people']);
+  }else if(isset($apiVars['visits'])){
+    addVisits($apiVars['visits']);
   }else{
-		die(mysql_error());
+    die(mysql_error());
   }
-
-if(!result){
+}else{
   die(mysql_error());
 }
 

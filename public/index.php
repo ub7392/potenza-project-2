@@ -32,22 +32,22 @@ if(!$conn){
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-left">
         <!-- About the website button -->
-        <button type="button" class = "btn btn-default navbar-btn" data-toggle = "modal" data-target="#aboutmodal">About</button>
+        <button type="button" class = "btn btn-default navbar-btn btn-warning" class = "button button1" data-toggle = "modal" data-target="#aboutmodal">About</button>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <!-- Add person button -->
-        <button type="button" class = "btn btn-default navbar-btn" data-toggle = "modal" data-target="#personmodal">Add a Person</button>
+        <button type="button" class = "btn btn-default navbar-btn btn-primary" data-toggle = "modal" data-target="#personmodal">Add a Person</button>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <!-- Add visit button -->
-        <button type="button" class = "btn btn-default navbar-btn" data-toggle = "modal" data-target = "#visitmodal"> Add a Visit</button>
+        <button type="button" class = "btn btn-default navbar-btn btn-info" data-toggle = "modal" data-target = "#visitmodal"> Add a Visit</button>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
 
 
-<!-- jumbotron about the website -->
+<!-- jumbotron - about button for the website -->
 <div id = "aboutmodal" class = "modal fade">
   <div class = "modal-dialog">
     <div class = "modal-content">
@@ -70,10 +70,10 @@ if(!$conn){
 
 <div class="row">
 
-  <!--Person info-->
+  <!--Person selection to display info-->
   <div id="info">
     <center>
-      <div class="modal-header">Select A Person</div>
+      <div class="header">Select A Person</div>
       <select class="listpeople">
         <option class="people_id">---Select Name---</option>
       </select>
