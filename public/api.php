@@ -21,6 +21,10 @@ while($i < count($segments)){
 	}
 }
 
+header('Content-Type: application/json');
+$requestMethod = $_SERVER["REQUEST_METHOD"];
+
+/*
 function findRoute($apiVars)
 {
   // Check if people are required
@@ -28,14 +32,14 @@ function findRoute($apiVars)
     getPeople($apiVars['people']);
   }
   // Check if states are required
-  if(isset($apiVars['states'])){
+  elseif(isset($apiVars['states'])){
     getStates($apiVars['states']);
   }
   // Check if visits are required
-  if(isset($apiVars['visits'])) {
+  elseif(isset($apiVars['visits'])) {
     getVisits($apiVars['visits']);
   }
-}
+}*/
 
 //api/people
 function getPeople($people_id){
@@ -50,6 +54,7 @@ function getPeople($people_id){
     while($row = mysql_fetch_array($result))
     {
       $response[] = [
+        'people_id' => $row['people_id'],
         'first_name' => $row['first_name'],
         'last_name' => $row['last_name'],
         'favorite_food' => $row['favorite_food']
@@ -60,7 +65,7 @@ function getPeople($people_id){
     echo(json_encode($response));
 
   //api/people/#
-  }elseif (is_numeric($people_id)){
+  }elseif(is_numeric($people_id)){
     $query = "SELECT * FROM people WHERE people_id = ".$people_id;
 
     $result = mysql_query($query, $conn);
@@ -192,7 +197,13 @@ function addVisit(){
 }
 
 if($_SERVER['REQUEST_METHOD'] == 'GET'){
-  findRoute($apiVars);
+  if(isset($apiVars['people'])){
+    getPeople($apiVars['people']);
+  }elseif(isset($apiVars['states'])){
+    getStates($apiVars['states']);
+  }elseif(isset($apiVars['visits'])) {
+    getVisits($apiVars['visits']);
+  }
 }elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
   if(isset($apiVars['people'])){
     addPeople($apiVars['people']);
@@ -204,6 +215,7 @@ if($_SERVER['REQUEST_METHOD'] == 'GET'){
 }else{
   die(mysql_error());
 }
+
 
  mysql_close($conn);
 ?>

@@ -12,7 +12,7 @@
 <script src="js/main.js"></script>
 
 <?php
-require "init.php";
+require_once "init.php";
 
 $conn=mysql_connect('localhost', 'root', 'root', 'project2');
 mysql_select_db('project2');
@@ -32,15 +32,15 @@ if(!$conn){
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav navbar-left">
         <!-- About the website button -->
-        <button type="button" class = "btn btn-default navbar-btn btn-warning" class = "button button1" data-toggle = "modal" data-target="#aboutmodal">About</button>
+        <button type="button" class = "btn btn-default navbar-btn" class = "button button1" data-toggle = "modal" data-target="#aboutmodal">About</button>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <!-- Add person button -->
-        <button type="button" class = "btn btn-default navbar-btn btn-primary" data-toggle = "modal" data-target="#personmodal">Add a Person</button>
+        <button type="button" class = "btn btn-default navbar-btn" data-toggle = "modal" data-target="#personmodal">Add a Person</button>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <!-- Add visit button -->
-        <button type="button" class = "btn btn-default navbar-btn btn-info" data-toggle = "modal" data-target = "#visitmodal"> Add a Visit</button>
+        <button type="button" class = "btn btn-default navbar-btn" data-toggle = "modal" data-target = "#visitmodal"> Add a Visit</button>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
@@ -68,74 +68,59 @@ if(!$conn){
   </div>
 </div>
 
-<div class="row">
-
-  <!--Person selection to display info-->
-  <div id="info">
-    <center>
-      <div class="header">Select A Person</div>
-      <select class="listpeople">
-        <option class="people_id">---Select Name---</option>
-      </select>
-    </center>
-    <div id="info_person">
-      <div class="info">
-      </div>
-      <div class="visits">
-      </div>
-    </div>
-  </div>
-
-  <div id="display_success">
-  </div>
-
-  <div class="info_add">
-  </div>
+<!--Person selection to display info-->
+<form>
+  <center>
+    <div class="header">Select A Person</div>
+    <select name = "people" id = "people" class = "dropdown-toggle">
+      <option id = "people_id">---Select Name---</option>
+    </select>
+    <div id = "peopleInfo"></div>
+    <div id = "visitInfo"></div>
+  </center>
+</form>
 
 <!--add person-->
-  <div class="modal fade" id="personmodal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <center>
-          <div class="modal-header">Add A Person</div>
-          <div class="modal-body">
-            <form method="post" class="addperson">
-              <p>First Name: <input type="text" name="firstname"></p>
-              <p>Last Name: <input type="text" name="lastname"></p>
-              <p>Favorite Food: <input type="text" name="favoritefood"></p>
-              <button class="addperson_btn btn btn-default" type="submit" data-dismiss="modal">Submit</button>
-              <button class="btn btn-default" type="close" data-dismiss = "modal"><a href = "index.php">Exit</a></button>
-            </form>
-          </center>
-        </div>
+<div class="modal fade" id="personmodal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <center>
+        <div class="modal-header">Add A Person</div>
+        <div class="modal-body">
+          <form method="post" class="addperson">
+            <p>First Name: <input type="text" id = "firstname" name="firstname" required="required"></p>
+            <p>Last Name: <input type="text" id = "lastname" name="lastname" required="required"></p>
+            <p>Favorite Food: <input type="text" id = "favoritefood" name="favoritefood" required="required"></p>
+            <button class="btn btn-default" type="submit" data-dismiss="modal" id = "submitperson" name = "submitperson">Submit</button>
+            <button class="btn btn-default" type="close" data-dismiss = "modal"><a href = "index.php">Exit</a></button>
+          </form>
+        </center>
       </div>
     </div>
   </div>
+</div>
+
 
 <!--add visit-->
-  <div class="modal fade" id="visitmodal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <center>
-          <div class="modal-header">Add A Visit</div>
-          <div class="modal-body">
-            <form method="post" class="addvisit">
-              <p>Select Person:<select class="listpeople_add" name="person-add"></select></p>
-              <p>Select State:<select class="state_id_list" name="state-vis"></select></p>
-              <p>Date Visited:<input type="text" placeholder = "MM/DD/YY" name="date-vis"></p>
-              <button class="addvisit_btn btn btn-default" type="submit" data-dismiss="modal">Submit</button>
-              <button class="btn btn-default" type="close" data-dismiss = "modal"><a href = "index.php">Exit</a></button>
-            </form>
-          </center>
-        </div>
+<div class="modal fade" id="visitmodal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <center>
+        <div class="modal-header">Add A Visit</div>
+        <div class="modal-body">
+          <form method="post" id="addvisit">
+            <p>Select Person: <select name="peoplevisit" id = "peoplevisit" required="required"></select></p>
+            <p>Select State: <select name="states" id="states" required = "required"></select></p>
+            <p>Date Visited: <input type="text" placeholder = "MM/DD/YY" name="date-vis"></p>
+            <button class="btn btn-default" type="submit" data-dismiss="modal" id = "submitvisit" name = "submitvisit">Submit</button>
+            <button class="btn btn-default" type="close" data-dismiss = "modal"><a href = "index.php">Exit</a></button>
+          </form>
+        </center>
       </div>
     </div>
   </div>
-
-  <div name="response">
-  </div>
-
 </div>
+
 
 </body>
 </html>
