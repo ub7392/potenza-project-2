@@ -26,7 +26,7 @@ if(!$conn){
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">Project 2</a>
+      <p class="navbar-text"><strong>Project 2</strong></p>
     </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -46,24 +46,22 @@ if(!$conn){
   </div><!-- /.container-fluid -->
 </nav>
 
-
-<!-- jumbotron - about button for the website -->
-<div id = "aboutmodal" class = "modal fade">
-  <div class = "modal-dialog">
-    <div class = "modal-content">
-      <div class = "modal-body">
-        <div class="container-fluid">
-          <div class="jumbotron jumbotron-fluid">
-            <center><h1 class="display-text">How this website works</h1></center>
-            <p>There are a 3 functionalities that are accessible through this website.</p>
-            <p>You can:</p>
-            <p>1. Find out information about a person by selecting a person on the main website through the drop down list</p>
-            <p>2. Add a person through the "Add a Person" button</p>
-            <p>3. Add a visit to a person through the "Add a Visit" button</p>
-            <center><button class="btn btn-default" type="close" data-dismiss = "modal"><a href = "index.php">Exit</a></button></center>
+<div class="modal fade" id="aboutmodal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <center>
+        <div class="modal-header"><strong>How this website works</strong></div>
+          <div class="modal-body">
+            <div = "modal-body">
+              <p>There are a 3 functionalities that are accessible through this website.</p>
+              <p>You can:</p>
+              <p>1. Find out information about a person by selecting a person on the main website through the drop down list</p>
+              <p>2. Add a person through the "Add a Person" button</p>
+              <p>3. Add a visit to a person through the "Add a Visit" button</p>
+            </div>
+            <button class="btn btn-default" type="close" data-dismiss = "modal"><a href = "index.php">Exit</a></button>
           </div>
-        </div>
-      </div>
+      </center>
     </div>
   </div>
 </div>
@@ -87,10 +85,10 @@ if(!$conn){
       <center>
         <div class="modal-header">Add A Person</div>
         <div class="modal-body">
-          <form method="post" class="addperson">
-            <p>First Name: <input type="text" id = "firstname" name="firstname" required="required"></p>
-            <p>Last Name: <input type="text" id = "lastname" name="lastname" required="required"></p>
-            <p>Favorite Food: <input type="text" id = "favoritefood" name="favoritefood" required="required"></p>
+          <form method="post" id="addperson">
+            <p>First Name: <input type="text" id = "first_name" name="first_name"></p>
+            <p>Last Name: <input type="text" id = "last_name" name="last_name"></p>
+            <p>Favorite Food: <input type="text" id = "favorite_food" name="favorite_food"></p>
             <button class="btn btn-default" type="submit" data-dismiss="modal" id = "submitperson" name = "submitperson">Submit</button>
             <button class="btn btn-default" type="close" data-dismiss = "modal"><a href = "index.php">Exit</a></button>
           </form>
@@ -109,9 +107,9 @@ if(!$conn){
         <div class="modal-header">Add A Visit</div>
         <div class="modal-body">
           <form method="post" id="addvisit">
-            <p>Select Person: <select name="peoplevisit" id = "peoplevisit" required="required"></select></p>
-            <p>Select State: <select name="states" id="states" required = "required"></select></p>
-            <p>Date Visited: <input type="text" placeholder = "MM/DD/YY" name="date-vis"></p>
+            <p>Select Person: <select name="peoplevisit" id = "peoplevisit"></select></p>
+            <p>Select State: <select name="states" id="states"></select></p>
+            <p>Date Visited: <input type="text" placeholder = "MM/DD/YY" id = "date_visited" name="date_visited"></p>
             <button class="btn btn-default" type="submit" data-dismiss="modal" id = "submitvisit" name = "submitvisit">Submit</button>
             <button class="btn btn-default" type="close" data-dismiss = "modal"><a href = "index.php">Exit</a></button>
           </form>

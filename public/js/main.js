@@ -1,14 +1,14 @@
 $(document).ready(function(){
   peopleDropdown();
   stateDropdown();
-  /*info();
+  info();
 
   $("#addperson")[0].reset();
   $("#addvisit")[0].reset();
 
   $('#submitperson').on('click', function(e){
     e.preventDefault();
-    addPeople();
+    addPerson();
     $("#addperson")[0].reset();
   });
 
@@ -16,7 +16,7 @@ $(document).ready(function(){
     e.preventDefault();
     addVisit();
     $("#addvisit")[0].reset();
-  });*/
+  });
 });
 
 function peopleDropdown(){
@@ -64,95 +64,91 @@ function stateDropdown(){
     }
   });
 }
-/*
+
 function info(){
-  $("#people").on("click", function(){
+  $("#people").change(function(){
     var peopleid = $("#people").val();
+
+    $("#peopleInfo").empty();
+    $("#visitInfo").empty();
 
     $.ajax({
       type: "GET",
       url: "api/visits/" + peopleid,
       dataType: "json",
       success: function(data){
-        $("#peopleInfo").empty();
-        $("#visitInfo").empty();
-
         var len = data.length;
 
         if(len > 0){
-          var firstname = data[0]["firstname"];
-          var lastname = data[0]["lastname"];
+          var firstname = data[0]["first_name"];
+          var lastname = data[0]["last_name"];
           var favoritefood = data[0]["favorite_food"];
 
-          $("#peopleInfo").append("<p>Name: " +firstname+ " " +lastname+ "</p><p>Favorite Food: " +favoritefood+ "</p><p>State(s) Visited: ");
+          $("#peopleInfo").append("<p></p><p>Name: " +firstname+ " " +lastname+ "</p><p>Favorite Food: " +favoritefood+ "</p><p>State(s) Visited: </p>");
+
 
           for(var i = 0; i < len; i++){
-            var state = data[i]["state_id"];
+            var state = data[i]["state_name"];
+            var stateabb = data[i]["state_abbreviation"];
             var date = data[i]["date_visited"];
 
-            $("#visitInfo").append(+state+ " on " +date+);
-          }
-        }else{
-              var firstname = data[0]["firstname"];
-              var lastname = data[0]["lastname"];
-              var favoritefood = data[0]["favorite_food"];
-              var len = data.length;
-              $("#peopleInfo").append("<p>Name: " +firstname+ " " +lastname+ "</p><p>Favorite Food: " +favoritefood+ "</p><p>State(s) Visited: None");
-            },
-            error: function(data){
-              console.log("There is an error loading info.")
+            if(jQuery.isEmptyObject(state)){
+              $("#visitInfo").append("No visits were recorded");
+            }else{
+              $("#visitInfo").append(" "+state+ " - " +stateabb+ " on " +date+ "</p>");
             }
-          });
+          }
         }
       },
       error: function(data){
-        console.log("There is an error loading info.")
+        console.log(data);
       }
     });
   });
 }
 
+
+
 function addPerson(){
-  $.ajax({
-    type: "POST",
-    url: "api/people",
-    data: $("#addperson").serialize(),
-    dataType: "json",
-    success: function(data){
-      console.log(data);
-      console.log($"#addperson").serialize());
-      alert("Person successfully added!");
-      peopleDropdown();
-      //info();
-    },
-    error: function(data){
-      alert("Error adding person!");
-      console.log(data);
-      console.log($("#addperson").serialize());
-    }
-  });
+  var firstname = document.getElementById("first_name").value;
+  var lastname = document.getElementById("last_name").value;
+  var favoritefood = document.getElementById("favorite_food").value;
+//Check input Fields Should not be blanks.
+  if (firstname == '' || lastname == '' || favoritefood == '') {
+  alert("Please Fill All Fields!");
+  }else{
+    $.ajax({
+      type: "POST",
+      url: "api/people",
+      data: $("#addperson").serialize(),
+      dataType: "json",
+      success: function(data){
+      	console.log(data);
+        alert(data);
+        peopleDropdown();
+      }
+    });
+  }
 }
 
 function addVisit()
 {
-	$.ajax({
-		type: "POST",
-		url: "api/visits",
-		data: $("#addvisit").serialize(),
-		dataType: "json",
-		success: function(data)
-		{
-			console.log(data);
-			console.log($("#addvisit").serialize());
-			alert("Visit successfully added!");
-		},
-		error: function(data, status, xhr)
-		{
-			alert("Error: Please fill out all inputs");
-			console.log(data);
-			console.log(status);
-			console.log(xhr);
-			console.log($("#addvisit").serialize());
-		}
-	});
-}*/
+  var date_visited = document.getElementById("date_visited").value;
+
+  //Check input Fields Should not be blanks.
+  if (date_visited == '') {
+    alert("Please Fill All Fields!");
+  }else{
+	   $.ajax({
+       type: "POST",
+       url: "api/visits",
+       data: $("#addvisit").serialize(),
+       dataType: "json",
+       success: function(data)
+       {
+         console.log(data);
+         alert(data);
+       }
+     });
+  }
+}

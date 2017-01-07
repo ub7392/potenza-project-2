@@ -95,6 +95,7 @@ function getStates($states_id){
     while($row = mysql_fetch_array($result))
     {
       $response[] = [
+        'states_id' => $row['states_id'],
         'state_name' => $row['state_name'],
         'state_abbreviation' => $row['state_abbreviation']
       ];
@@ -111,6 +112,7 @@ function getStates($states_id){
     while($row = mysql_fetch_array($result))
     {
       $response[] = [
+        'states_id' => $row['states_id'],
         'state_name' => $row['state_name'],
         'state_abbreviation' => $row['state_abbreviation']
       ];
@@ -128,7 +130,6 @@ function getVisits($visits_id){
   //api/visits
   if($visits_id === 'null'){
     $query = "SELECT * FROM visits";
-
     $result = mysql_query($query, $conn);
     while($row = mysql_fetch_array($result))
     {
@@ -144,19 +145,77 @@ function getVisits($visits_id){
 
   //api/visits/#
   }elseif (is_numeric($visits_id)){
-    $query = "SELECT * FROM visits WHERE id = ".$visits_id;
+    $query = "SELECT
+              people.first_name,
+              people.last_name,
+              people.favorite_food,
+              states.state_name,
+              states.state_abbreviation,
+              visits.date_visited
+              FROM people
+              INNER JOIN visits ON visits.person_id = people.people_id
+              INNER JOIN states ON states.states_id = visits.state_id
+              WHERE people.people_id = ".$visits_id;
 
     $result = mysql_query($query, $conn);
-    while($row = mysql_fetch_array($result))
-    {
+    while($row = mysql_fetch_array($result)){
       $response[] = [
-        'person_id' => $row['person_id'],
-        'state_id' => $row['state_id'],
+        'first_name' => $row['first_name'],
+        'last_name' => $row['last_name'],
+        'favorite_food' => $row['favorite_food'],
+        'state_name' => $row['state_name'],
+        'state_abbreviation' => $row['state_abbreviation'],
         'date_visited' => $row['date_visited']
       ];
     }
+
+    if(empty($response)){
+      $query = "SELECT * FROM people
+                WHERE people_id = ".$visits_id;
+
+      $result = mysql_query($query, $conn);
+      while($row = mysql_fetch_array($result)){
+        $response[] = [
+          'first_name' => $row['first_name'],
+          'last_name' => $row['last_name'],
+          'favorite_food' => $row['favorite_food'],
+        ];
+      }
+
+          header('Content-Type: application/json');
+          echo(json_encode($response));
+    }else{
+
+          header('Content-Type: application/json');
+          echo(json_encode($response));
+    }
+
+    /*$query = "SELECT
+              people.first_name,
+              people.last_name,
+              people.favorite_food,
+              states.state_name,
+              states.state_abbreviation,
+              visits.date_visited
+              FROM people
+              INNER JOIN visits ON visits.person_id = people.people_id
+              INNER JOIN states ON states.states_id = visits.state_id
+              WHERE people.people_id = ".$visits_id;
+
+    $result = mysql_query($query, $conn);
+    while($row = mysql_fetch_array($result)){
+      $response[] = [
+        'first_name' => $row['first_name'],
+        'last_name' => $row['last_name'],
+        'favorite_food' => $row['favorite_food'],
+        'state_name' => $row['state_name'],
+        'state_abbreviation' => $row['state_abbreviation'],
+        'date_visited' => $row['date_visited']
+      ];
+    }
+
     header('Content-Type: application/json');
-    echo(json_encode($response));
+    echo(json_encode($response));*/
   }
 }
 
@@ -172,17 +231,17 @@ function addPeople(){
             VALUES('$first_name', '$last_name', '$favorite_food')";
 
   if(mysql_query($query)){
-    echo " ".$first_name." ".$last_name." was added!";
+    echo(json_encode(" ".$first_name." ".$last_name." was successfully added!"));
   }else{
-    echo mysql_error();
+    echo(json_encode(mysql_error()));
   }
 }
 
 function addVisit(){
   global $conn;
 
-  $person_id = $_POST['person_id'];
-  $state_id = $_POST['state_id'];
+  $person_id = $_POST['peoplevisit'];
+  $state_id = $_POST['states'];
   $date_visited = $_POST['date_visited'];
 
   $query = "INSERT INTO visits
@@ -190,9 +249,9 @@ function addVisit(){
             VALUES('$person_id', '$state_id', '$date_visited')";
 
   if(mysql_query($query)){
-    echo "This visit was added!";
+    echo(json_encode("This visit to was successfully added!"));
   }else{
-    echo mysql_error();
+    echo(mysql_error());
   }
 }
 
@@ -206,9 +265,9 @@ if($_SERVER['REQUEST_METHOD'] == 'GET'){
   }
 }elseif($_SERVER['REQUEST_METHOD'] == 'POST'){
   if(isset($apiVars['people'])){
-    addPeople($apiVars['people']);
+    addPeople();
   }else if(isset($apiVars['visits'])){
-    addVisits($apiVars['visits']);
+    addVisit();
   }else{
     die(mysql_error());
   }
