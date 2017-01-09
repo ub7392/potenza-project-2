@@ -20,27 +20,6 @@ while($i < count($segments)){
       $i++;
 	}
 }
-
-header('Content-Type: application/json');
-$requestMethod = $_SERVER["REQUEST_METHOD"];
-
-/*
-function findRoute($apiVars)
-{
-  // Check if people are required
-  if(isset($apiVars['people'])){
-    getPeople($apiVars['people']);
-  }
-  // Check if states are required
-  elseif(isset($apiVars['states'])){
-    getStates($apiVars['states']);
-  }
-  // Check if visits are required
-  elseif(isset($apiVars['visits'])) {
-    getVisits($apiVars['visits']);
-  }
-}*/
-
 //api/people
 function getPeople($people_id){
   global $conn;
@@ -103,7 +82,6 @@ function getStates($states_id){
 
     header('Content-Type: application/json');
     echo(json_encode($response));
-
   //api/states/#
   }elseif (is_numeric($states_id)){
     $query = "SELECT * FROM states WHERE states_id = ".$states_id;
@@ -126,7 +104,6 @@ function getStates($states_id){
 function getVisits($visits_id){
   global $conn;
   $response = [];
-
   //api/visits
   if($visits_id === 'null'){
     $query = "SELECT * FROM visits";
@@ -142,7 +119,6 @@ function getVisits($visits_id){
 
     header('Content-Type: application/json');
     echo(json_encode($response));
-
   //api/visits/#
   }elseif (is_numeric($visits_id)){
     $query = "SELECT
@@ -189,33 +165,6 @@ function getVisits($visits_id){
           header('Content-Type: application/json');
           echo(json_encode($response));
     }
-
-    /*$query = "SELECT
-              people.first_name,
-              people.last_name,
-              people.favorite_food,
-              states.state_name,
-              states.state_abbreviation,
-              visits.date_visited
-              FROM people
-              INNER JOIN visits ON visits.person_id = people.people_id
-              INNER JOIN states ON states.states_id = visits.state_id
-              WHERE people.people_id = ".$visits_id;
-
-    $result = mysql_query($query, $conn);
-    while($row = mysql_fetch_array($result)){
-      $response[] = [
-        'first_name' => $row['first_name'],
-        'last_name' => $row['last_name'],
-        'favorite_food' => $row['favorite_food'],
-        'state_name' => $row['state_name'],
-        'state_abbreviation' => $row['state_abbreviation'],
-        'date_visited' => $row['date_visited']
-      ];
-    }
-
-    header('Content-Type: application/json');
-    echo(json_encode($response));*/
   }
 }
 
@@ -274,7 +223,6 @@ if($_SERVER['REQUEST_METHOD'] == 'GET'){
 }else{
   die(mysql_error());
 }
-
 
  mysql_close($conn);
 ?>

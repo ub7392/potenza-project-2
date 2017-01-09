@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <body>
 <title>Project 2</title>
+<!-- Latest compiled and minified CSS -->
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css">
 <!-- jQuery library -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <!-- Latest compiled JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="js/main.js"></script>
+<script type="text/javascript" src="js/main.js"></script>
 
 <?php
 require_once "init.php";
@@ -92,8 +93,8 @@ if(!$conn){
             <button class="btn btn-default" type="submit" data-dismiss="modal" id = "submitperson" name = "submitperson">Submit</button>
             <button class="btn btn-default" type="close" data-dismiss = "modal"><a href = "index.php">Exit</a></button>
           </form>
-        </center>
-      </div>
+        </div>
+      </center>
     </div>
   </div>
 </div>
@@ -113,12 +114,11 @@ if(!$conn){
             <button class="btn btn-default" type="submit" data-dismiss="modal" id = "submitvisit" name = "submitvisit">Submit</button>
             <button class="btn btn-default" type="close" data-dismiss = "modal"><a href = "index.php">Exit</a></button>
           </form>
-        </center>
-      </div>
+        </div>
+      </center>
     </div>
   </div>
 </div>
-
 
 </body>
 </html>

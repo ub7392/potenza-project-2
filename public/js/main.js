@@ -22,8 +22,8 @@ $(document).ready(function(){
 function peopleDropdown(){
   $.ajax({
     type: "GET",
-    url: "api/people",
     dataType: "json",
+    url: "api/people",
     success: function(data){
       $("#people option").not("#people_id").remove();
       $("#peoplevisit option").remove();
@@ -38,7 +38,8 @@ function peopleDropdown(){
       }
     },
     error: function(data){
-      console.log("There is an error loading people.")
+      console.log("There is an error loading people.");
+      console.log(data);
     }
   });
 }
@@ -46,8 +47,8 @@ function peopleDropdown(){
 function stateDropdown(){
   $.ajax({
     type: "GET",
-    url: "api/states",
     dataType: "json",
+    url: "api/states",
     success: function(data){
       $("#states option").remove();
 
@@ -60,7 +61,8 @@ function stateDropdown(){
       }
     },
     error: function(data){
-      console.log("There is an error loading states")
+      console.log("There is an error loading states");
+      console.log(data);
     }
   });
 }
@@ -74,8 +76,8 @@ function info(){
 
     $.ajax({
       type: "GET",
-      url: "api/visits/" + peopleid,
       dataType: "json",
+      url: "api/visits/" + peopleid,
       success: function(data){
         var len = data.length;
 
@@ -107,47 +109,51 @@ function info(){
   });
 }
 
-
-
 function addPerson(){
   var firstname = document.getElementById("first_name").value;
   var lastname = document.getElementById("last_name").value;
   var favoritefood = document.getElementById("favorite_food").value;
-//Check input Fields Should not be blanks.
+  //Check input Fields Should not be blanks.
   if (firstname == '' || lastname == '' || favoritefood == '') {
   alert("Please Fill All Fields!");
   }else{
     $.ajax({
       type: "POST",
+      dataType: "json",
       url: "api/people",
       data: $("#addperson").serialize(),
-      dataType: "json",
       success: function(data){
       	console.log(data);
         alert(data);
         peopleDropdown();
+      },
+      error: function(data){
+       console.log("There is something wrong while adding this person");
+       console.log(data);
       }
     });
   }
 }
 
-function addVisit()
-{
+function addVisit(){
   var date_visited = document.getElementById("date_visited").value;
-
   //Check input Fields Should not be blanks.
   if (date_visited == '') {
     alert("Please Fill All Fields!");
   }else{
 	   $.ajax({
        type: "POST",
+       dataType: "json",
        url: "api/visits",
        data: $("#addvisit").serialize(),
-       dataType: "json",
        success: function(data)
        {
          console.log(data);
          alert(data);
+       },
+       error: function(data){
+        console.log("There is something wrong while adding your visit");
+       	console.log(data);
        }
      });
   }
